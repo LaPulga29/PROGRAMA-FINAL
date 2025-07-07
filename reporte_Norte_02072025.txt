@@ -1,0 +1,20 @@
+Reporte de Contaminacion y Prediccion
+Zona: Norte
+Fecha de ingreso: 02072025
+
+Niveles Actuales:
+CO(ppb): 254.00
+SO2(ppb): 12.00
+NO2(ppb): 3.00
+PM2.5(µg/m³): 12.00
+
+Condiciones ambientales:
+Temperatura: 14.00 °C
+Humedad: 45.00 %
+Viento: 13.00 km/h
+
+Prediccion para las proximas 24h:
+CO(ppb): 16.39
+SO2(ppb): 0.77
+NO2(ppb): 0.19
+PM2.5(µg/m³): 0.77

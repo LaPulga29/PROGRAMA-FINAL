@@ -31,8 +31,8 @@ int menu(){
     return opcion;
 }
 
-void cargar_datos(struct Zona zonas[]) { //DATOS DE LAS ZONAS
-    FILE* f = fopen("datos_zonas.dat", "rb"); //abre un archivo binario para lectura
+void cargar_datos(struct Zona zonas[]) { //NOOOOOOOO
+    FILE* f = fopen("datos_zonas.dat", "rb"); 
     if (f == NULL) {
         for(int i=0; i<ZONAS; i++) {
             strcpy(zonas[i].nombre, nombres_zonas[i]);
@@ -105,7 +105,7 @@ void ingresar_datos_actuales(struct Zona zonas[]) { // 1.
             return;
         }
     }
-    strcpy(zonas[idx].actual.fecha, fecha);
+    strcpy(zonas[idx].actual.fecha, fecha); //Copia una cadena a otra incluyendo CN
     // Copia a la estructura
 
     printf("\nZona: %s\n", zonas[idx].nombre);
@@ -182,25 +182,50 @@ void predecir_contaminacion(struct Zona zonas[], float prediccion[5][4]) { //3.
     }
 }
 
-void exportar_reporte(struct Zona zonas[], float prediccion[5][4]) { //4. Exporta el reporte de contaminacion y prediccion a un archivo de texto
-    FILE* f = fopen("reporte_contaminacion.txt", "w");//crea un archivo de texto para escritura
-    if (f == NULL) {
-        printf("Error al exportar reporte.\n");
-        return;
-    }
-    fprintf(f, "Reporte de Contaminacion y Prediccion\n");
+void exportar_reporte(struct Zona zonas[], float prediccion[5][4]) {
     for(int i=0; i<ZONAS; i++) {
-        fprintf(f, "\nZona: %s\n", zonas[i].nombre);
-        fprintf(f, "Actual:\n");
+        if(zonas[i].actual.fecha[0] == '\0') continue;
+
+        // Construir nombre de archivo dinámico: reporte_NombreZona_Fecha.txt
+        char nombre_archivo[100];
+        char zona_sin_espacios[30];
+        strcpy(zona_sin_espacios, zonas[i].nombre);
+
+        // Reemplazar espacios por guiones bajos
+        for(int j=0; zona_sin_espacios[j] != '\0'; j++) {
+            if(zona_sin_espacios[j] == ' ') zona_sin_espacios[j] = '_';
+        }
+
+        sprintf(nombre_archivo, "reporte_%s_%s.txt", zona_sin_espacios, zonas[i].actual.fecha);
+
+        FILE* f = fopen(nombre_archivo, "w");
+        if (f == NULL) {
+            printf("Error al exportar reporte para zona %s.\n", zonas[i].nombre);
+            continue;
+        }
+
+        fprintf(f, "Reporte de Contaminacion y Prediccion\n");
+        fprintf(f, "Zona: %s\n", zonas[i].nombre);
+        fprintf(f, "Fecha de ingreso: %s\n\n", zonas[i].actual.fecha);
+
+        fprintf(f, "Niveles Actuales:\n");
         for(int j=0; j<CONTAMINANTES; j++) {
             fprintf(f, "%s: %.2f\n", nombres_contaminantes[j], zonas[i].actual.contaminantes[j]);
         }
-        fprintf(f, "Prediccion para proximas 24h:\n");
+
+        fprintf(f, "\nCondiciones ambientales:\n");
+        fprintf(f, "Temperatura: %.2f °C\n", zonas[i].actual.temperatura);
+        fprintf(f, "Humedad: %.2f %%\n", zonas[i].actual.humedad);
+        fprintf(f, "Viento: %.2f km/h\n", zonas[i].actual.viento);
+
+        fprintf(f, "\nPrediccion para las proximas 24h:\n");
         for(int j=0; j<CONTAMINANTES; j++) {
             fprintf(f, "%s: %.2f\n", nombres_contaminantes[j], prediccion[i][j]);
         }
+
+        fclose(f);
+        printf("Reporte exportado: %s\n", nombre_archivo);
     }
-    fclose(f);
 }
 
 void reiniciar_datos(struct Zona zonas[]) { // 5. Reinicia todos los datos de las zonas
@@ -227,10 +252,9 @@ void reiniciar_datos(struct Zona zonas[]) { // 5. Reinicia todos los datos de la
     printf("Todos los datos han sido reiniciados.\n");
 }
 
-void mostrar_promedios_historicos(struct Zona zonas[]) { //DATOS DE LAS ZONAS
-
+void mostrar_promedios_historicos(struct Zona zonas[]) {
     int zona_opcion, val = 0;
-    printf("\nSeleccione la zona para ver promedios historicos, alertas y recomendaciones:\n");
+    printf("\nSeleccione la zona para ver promedios historicos:\n");
     for(int i=0; i<5; i++) {
         printf("%d. %s\n", i+1, nombres_zonas[i]);
     }
@@ -243,7 +267,7 @@ void mostrar_promedios_historicos(struct Zona zonas[]) { //DATOS DE LAS ZONAS
     }
     int idx = zona_opcion - 1;
 
-    FILE* f = fopen("datoshistoricos.txt", "r"); // Abre el archivo de texto para lectura
+    FILE* f = fopen("datoshistoricos.txt", "r");
     float suma[4] = {0};
     int contador = 0;
     int zona_encontrada = 0;
@@ -252,30 +276,24 @@ void mostrar_promedios_historicos(struct Zona zonas[]) { //DATOS DE LAS ZONAS
     if (f != NULL) {
         while(fgets(linea, sizeof(linea), f)) {
             if(linea[0] == '#' || linea[0] == '\n') continue;
-            // Elimina el salto de línea al final de la línea
             int len = strlen(linea);
-            if(len > 0 && linea[len-1] == '\n') {
-                linea[len-1] = '\0';
-            }
-            // Buscar el nombre de la zona como encabezado
+            if(len > 0 && linea[len-1] == '\n') linea[len-1] = '\0';
+
             if(zona_encontrada == 0 && strcmp(linea, nombres_zonas[idx]) == 0) {
                 zona_encontrada = 1;
                 continue;
             }
-            // Si encontramos otra zona, salimos
+
             if(zona_encontrada == 1) {
                 int es_otra_zona = 0;
                 for(int z=0; z<5; z++) {
-                    if(z != idx) {
-                        // Compara la línea completa con el nombre de la zona
-                        if(strcmp(linea, nombres_zonas[z]) == 0) {
-                            es_otra_zona = 1;
-                            break;
-                        }
+                    if(z != idx && strcmp(linea, nombres_zonas[z]) == 0) {
+                        es_otra_zona = 1;
+                        break;
                     }
                 }
                 if(es_otra_zona) break;
-                // Leer datos de la zona seleccionada
+
                 char fecha[20], hora[20];
                 float c1, c2, c3, c4;
                 int leidos = sscanf(linea, "%[^,],%[^,],%f,%f,%f,%f", fecha, hora, &c1, &c2, &c3, &c4);
@@ -295,30 +313,17 @@ void mostrar_promedios_historicos(struct Zona zonas[]) { //DATOS DE LAS ZONAS
     }
 
     printf("\nPromedio de los ultimos 30 dias para zona %s:\n", nombres_zonas[idx]);
-    int alerta = 0;
     char* simbolos[4] = {"CO", "SO2", "NO2", "PM2.5"};
     float limites[4] = {3490.0, 15.0, 13.3, 15.0};
+
     for(int j=0; j<4; j++) {
-        float promedio;
-        if (contador > 0) {
-            promedio = suma[j] / contador;
-        } else {
-            promedio = 0;
-        }
-        printf("%s: %.2f (Limite OMS: %.2f)\n", simbolos[j], promedio, limites[j]);
+        float promedio = (contador > 0) ? (suma[j] / contador) : 0;
+        printf("%s: %.2f (Limite OMS: %.2f)", simbolos[j], promedio, limites[j]);
         if(promedio > limites[j]) {
-            alerta = 1;
-            printf("ALERTA: %s promedio %.2f supera limite OMS %.2f\n", simbolos[j], promedio, limites[j]);
+            printf("  -> ALERTA\n");
+        } else {
+            printf("\n");
         }
-    }
-    if(alerta) {
-        printf("Recomendaciones:\n");
-        printf("- Reducir trafico vehicular\n");
-        printf("- Considerar cierre temporal de industrias\n");
-        printf("- Suspender actividades al aire libre\n");
-        printf("- Promover uso de transporte publico\n");
-    } else {
-        printf("Niveles dentro de limites. Mantener vigilancia.\n");
     }
 }
 
