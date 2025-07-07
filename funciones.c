@@ -5,7 +5,6 @@
 int ZONAS = 5;
 int DIAS = 30;
 int CONTAMINANTES = 4;
-
 float limites_oms[4] = { 3490.0, 15.0, 13.3, 15.0 };
 char* nombres_contaminantes[4] = { "CO(ppb)", "SO2(ppb)", "NO2(ppb)", "PM2.5(µg/m³)" };
 char* nombres_zonas[5] = { "Norte", "Centro Norte", "Sur", "Centro Sur", "Valles" };
@@ -408,19 +407,37 @@ void mostrar_prediccion_alerta_recomendacion(struct Zona zonas[]) {
     // Aplicar la fórmula de predicción para cada contaminante
     float prediccion[4] = {0};
     float suma_pesos = 0;
-    for(int i=0; i<30; i++) {
+    for (int i = 0; i < 30; i++)
+    {
         suma_pesos += (30 - i);
     }
-    for(int j=0; j<4; j++) {
+
+    for (int j = 0; j < 4; j++)
+    {
         float suma = 0;
-        for(int i=0; i<30; i++) {
+        for (int i = 0; i < 30; i++)
+        {
             suma += historico[i][j] * (30 - i);
         }
-        float promedio_ponderado = (suma_pesos > 0) ? suma / suma_pesos : 0;
+
+        float promedio_ponderado;
+        if (suma_pesos > 0)
+        {
+            promedio_ponderado = suma / suma_pesos;
+        }
+        else
+        {
+            promedio_ponderado = 0;
+        }
+
         float ajuste = 1.0;
-        if(zonas[idx].actual.temperatura > 30) ajuste += 0.05;
-        if(zonas[idx].actual.humedad < 40) ajuste += 0.05;
-        if(zonas[idx].actual.viento < 5) ajuste += 0.05;
+        if (zonas[idx].actual.temperatura > 30)
+            ajuste += 0.05;
+        if (zonas[idx].actual.humedad < 40)
+            ajuste += 0.05;
+        if (zonas[idx].actual.viento < 5)
+            ajuste += 0.05;
+
         prediccion[j] = promedio_ponderado * ajuste;
     }
 
