@@ -1,0 +1,61 @@
+Reporte de Contaminacion y Prediccion
+
+Zona: Norte
+Actual:
+CO(ppb): 0.00
+SO2(ppb): 0.00
+NO2(ppb): 0.00
+PM2.5(µg/m³): 0.00
+Prediccion para proximas 24h:
+CO(ppb): 0.00
+SO2(ppb): 0.00
+NO2(ppb): 0.00
+PM2.5(µg/m³): 0.00
+
+Zona: Centro Norte
+Actual:
+CO(ppb): 5000.00
+SO2(ppb): 50.00
+NO2(ppb): 60.00
+PM2.5(µg/m³): 70.00
+Prediccion para proximas 24h:
+CO(ppb): 338.71
+SO2(ppb): 3.39
+NO2(ppb): 4.06
+PM2.5(µg/m³): 4.74
+
+Zona: Sur
+Actual:
+CO(ppb): 0.00
+SO2(ppb): 0.00
+NO2(ppb): 0.00
+PM2.5(µg/m³): 0.00
+Prediccion para proximas 24h:
+CO(ppb): 0.00
+SO2(ppb): 0.00
+NO2(ppb): 0.00
+PM2.5(µg/m³): 0.00
+
+Zona: Centro Sur
+Actual:
+CO(ppb): 0.00
+SO2(ppb): 0.00
+NO2(ppb): 0.00
+PM2.5(µg/m³): 0.00
+Prediccion para proximas 24h:
+CO(ppb): 0.00
+SO2(ppb): 0.00
+NO2(ppb): 0.00
+PM2.5(µg/m³): 0.00
+
+Zona: Valles
+Actual:
+CO(ppb): 0.00
+SO2(ppb): 0.00
+NO2(ppb): 0.00
+PM2.5(µg/m³): 0.00
+Prediccion para proximas 24h:
+CO(ppb): 0.00
+SO2(ppb): 0.00
+NO2(ppb): 0.00
+PM2.5(µg/m³): 0.00
