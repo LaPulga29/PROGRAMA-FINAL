@@ -1,0 +1,20 @@
+Reporte de Contaminacion y Prediccion
+Zona: Valles
+Fecha de ingreso: 05072025
+
+Niveles Actuales:
+CO(ppb): 234.00
+SO2(ppb): 12.00
+NO2(ppb): 3.00
+PM2.5(µg/m³): 12.00
+
+Condiciones ambientales:
+Temperatura: 34.00 °C
+Humedad: 2.00 %
+Viento: 3.00 km/h
+
+Prediccion para las proximas 24h:
+CO(ppb): 17.36
+SO2(ppb): 0.89
+NO2(ppb): 0.22
+PM2.5(µg/m³): 0.89
